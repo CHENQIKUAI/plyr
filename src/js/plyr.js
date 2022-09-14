@@ -80,20 +80,22 @@ class Plyr {
 
     // Elements cache
     this.elements = {
-      container: null,
+      container: null, // 容器元素
       fullscreen: null,
-      captions: null,
-      buttons: {},
-      display: {},
-      progress: {},
-      inputs: {},
+      captions: null, // 字幕显示
+      buttons: {}, // captions 字幕 、fullscreen 全屏、mute 静音、pip 画中画、play 播放、settings 设置
+      display: {}, // currentTime 当前时间元素、buffer 缓存条、seekTooltip ?
+      progress: {}, // 进度条元素
+      inputs: {}, // seek 进度条元素、volume 音量
       settings: {
         popup: null,
-        menu: null,
+        menu: null, // 菜单
         panels: {},
         buttons: {},
       },
     };
+
+    console.log(this.elements, 'show elements');
 
     // Captions
     this.captions = {

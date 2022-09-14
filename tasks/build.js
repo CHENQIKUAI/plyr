@@ -203,13 +203,13 @@ gulp.task('sprites', gulp.parallel(...tasks.sprite));
 // Watch for file changes
 gulp.task('watch', () => {
   // Plyr core
-  gulp.watch(paths.plyr.src.js, gulp.parallel('js'));
-  gulp.watch(paths.plyr.src.sass, gulp.parallel('css'));
-  gulp.watch(paths.plyr.src.sprite, gulp.parallel('sprites'));
+  gulp.watch(paths.plyr.src.js, { queue: false }, gulp.parallel('js'));
+  gulp.watch(paths.plyr.src.sass, { queue: false }, gulp.parallel('css'));
+  gulp.watch(paths.plyr.src.sprite, { queue: false }, gulp.parallel('sprites'));
 
   // Demo
-  gulp.watch(paths.demo.src.js, gulp.parallel('js'));
-  gulp.watch(paths.demo.src.sass, gulp.parallel('css'));
+  gulp.watch(paths.demo.src.js, { queue: false }, gulp.parallel('js'));
+  gulp.watch(paths.demo.src.sass, { queue: false }, gulp.parallel('css'));
 });
 
 // Serve via browser sync
