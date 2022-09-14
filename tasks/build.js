@@ -36,31 +36,30 @@ const build = require('../build.json');
 // Info from package
 const minSuffix = '.min';
 // Paths
-const root = path.join(__dirname, '..');
 const paths = {
   plyr: {
     // Source paths
     src: {
-      sass: path.join(root, 'src/sass/**/*.scss'),
-      js: path.join(root, 'src/js/**/*.js'),
-      sprite: path.join(root, 'src/sprite/*.svg'),
+      sass: 'src/sass/**/*.scss',
+      js: 'src/js/**/*.js',
+      sprite: 'src/sprite/*.svg',
     },
 
     // Output paths
-    output: path.join(root, 'dist/'),
+    output: 'dist/',
   },
   demo: {
     // Source paths
     src: {
-      sass: path.join(root, 'demo/src/sass/**/*.scss'),
-      js: path.join(root, 'demo/src/js/**/*.js'),
+      sass: 'demo/src/sass/**/*.scss',
+      js: 'demo/src/js/**/*.js',
     },
 
     // Output paths
-    output: path.join(root, 'demo/dist/'),
+    output: 'demo/dist/',
 
     // Demo
-    root: path.join(root, 'demo/'),
+    root: 'demo/',
   },
 };
 
