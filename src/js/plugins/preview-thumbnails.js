@@ -239,7 +239,7 @@ class PreviewThumbnails {
       this.mousePosX = event.pageX;
 
       // Set time text inside image container
-      // 修改缩略图上展示的时间
+      // 修改缩略图上展示的时间，因为设置了innerText，所以消除了time下的原先内容。（有可能包含${point.label}<br>）
       this.elements.thumb.time.innerText = formatTime(this.seekTime);
 
       // Get marker point for time
@@ -301,10 +301,12 @@ class PreviewThumbnails {
   listeners = () => {
     // Hide thumbnail preview - on mouse click, mouse leave (in listeners.js for now), and video play/seek. All four are required, e.g., for buffering
     this.player.on('play', () => {
+      // 播放时隐藏
       this.toggleThumbContainer(false, true);
     });
 
     this.player.on('seeked', () => {
+      // 视频播放位置重新设置时隐藏
       this.toggleThumbContainer(false);
     });
 
@@ -573,6 +575,7 @@ class PreviewThumbnails {
     return Object.keys(this.thumbnails[0].frames[0]).includes('w');
   }
 
+  // 缩略图 宽度/长度 比
   get thumbAspectRatio() {
     if (this.usingSprites) {
       return this.thumbnails[0].frames[0].w / this.thumbnails[0].frames[0].h;
@@ -581,6 +584,7 @@ class PreviewThumbnails {
     return this.thumbnails[0].width / this.thumbnails[0].height;
   }
 
+  // 缩略图容器高度
   get thumbContainerHeight() {
     if (this.mouseDown) {
       const { height } = fitRatio(this.thumbAspectRatio, {
@@ -656,6 +660,7 @@ class PreviewThumbnails {
     this.setThumbContainerPos();
   };
 
+  // 设置缩略图容器位置
   setThumbContainerPos = () => {
     const scrubberRect = this.player.elements.progress.getBoundingClientRect();
     const containerRect = this.player.elements.container.getBoundingClientRect();
@@ -685,6 +690,7 @@ class PreviewThumbnails {
   };
 
   // Sprites need to be offset to the correct location
+  // 设置精灵图大小和位置
   setImageSizeAndOffset = (previewImage, frame) => {
     if (!this.usingSprites) return;
 
