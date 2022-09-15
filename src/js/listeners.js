@@ -762,6 +762,7 @@ class Listeners {
 
     // Preview thumbnails plugin
     // TODO: Really need to work on some sort of plug-in wide event bus or pub-sub for this
+    // 鼠标移动到进度条上时，调用startMove，把event传递给它。
     this.bind(elements.progress, 'mousemove touchmove', (event) => {
       const { previewThumbnails } = player;
 
@@ -771,11 +772,13 @@ class Listeners {
     });
 
     // Hide thumbnail preview - on mouse click, mouse leave, and video play/seek. All four are required, e.g., for buffering
+    // 鼠标点击或者鼠标离开或者视频播放或者视频seek时，隐藏缩略图的显示
     this.bind(elements.progress, 'mouseleave touchend click', () => {
       const { previewThumbnails } = player;
 
       if (previewThumbnails && previewThumbnails.loaded) {
         previewThumbnails.endMove(false, true);
+        // 这里false true多传了
       }
     });
 

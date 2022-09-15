@@ -49,6 +49,7 @@ const controls = {
 
   // Find the UI controls
   findElements() {
+    // 获取元素的引用并把它设置到到elements中。
     try {
       this.elements.controls = getElement.call(this, this.config.selectors.controls.wrapper);
 
@@ -77,8 +78,9 @@ const controls = {
       };
 
       // Display
+      // 获取各个元素的引用，设置到display对象中
       this.elements.display = {
-        buffer: getElement.call(this, this.config.selectors.display.buffer),
+        buffer: getElement.call(this, this.config.selectors.display.buffer), // 缓存条
         currentTime: getElement.call(this, this.config.selectors.display.currentTime),
         duration: getElement.call(this, this.config.selectors.display.duration),
       };

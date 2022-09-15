@@ -6,7 +6,8 @@ const noop = () => {};
 
 export default class Console {
   constructor(enabled = false) {
-    this.enabled = window.console && enabled;
+    // this.enabled = window.console && enabled;
+    this.enabled = false;
 
     if (this.enabled) {
       this.log('Debugging enabled');

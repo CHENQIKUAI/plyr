@@ -6,6 +6,8 @@ import { clamp } from '../utils/numbers';
 import { formatTime } from '../utils/time';
 
 // Arg: vttDataString example: "WEBVTT\n\n1\n00:00:05.000 --> 00:00:10.000\n1080p-00001.jpg"
+// 解析vvt文件，获取各秒缩略图（https://cdn.plyr.io/static/demo/thumbs/100p.vtt文件中，缩略图是浓缩在一张图片上，xywh定义了缩略图在这张大图的位置、大小，类似于精灵图）
+// 函数返回解析的结果，startTime，endTime表示时间范围，text表示图片名称，xywh表示x轴位置y轴位置宽高
 const parseVtt = (vttDataString) => {
   const processedList = [];
   const frames = vttDataString.split(/\r\n\r\n|\n\n|\r\r/);
@@ -118,6 +120,7 @@ class PreviewThumbnails {
       }
 
       // Render DOM elements
+      // 创建缩略图元素们，并分别插入到指定位置
       this.render();
 
       // Check to see if thumb container size was specified manually in CSS
@@ -128,9 +131,11 @@ class PreviewThumbnails {
   };
 
   // Download VTT files and parse them
+  // 从config.previewThumbnails的配置中请求VTT文件，解析其中数据并设置到thumbnails中。
   getThumbnails = () => {
     return new Promise((resolve) => {
       const { src } = this.player.config.previewThumbnails;
+      // 获取初始化player时配置的vtt文件地址
 
       if (is.empty(src)) {
         throw new Error('Missing previewThumbnails.src config attribute');
@@ -171,8 +176,8 @@ class PreviewThumbnails {
       fetch(url).then((response) => {
         const thumbnail = {
           frames: parseVtt(response),
-          height: null,
-          urlPrefix: '',
+          height: null, // 缩略精灵图的实际高度
+          urlPrefix: '', // 缩略图图片的prefix地址
         };
 
         // If the URLs don't start with '/', then we need to set their relative path to be the location of the VTT file
@@ -197,8 +202,8 @@ class PreviewThumbnails {
 
           resolve();
         };
-
         tempImage.src = thumbnail.urlPrefix + thumbnail.frames[0].text;
+        // 设置src是为了获取图片的实际宽高，在tempImage中将获取到的结果设置到thumbnail中。
       });
     });
   };
@@ -213,11 +218,12 @@ class PreviewThumbnails {
 
     if (event.type === 'touchmove') {
       // Calculate seek hover position as approx video seconds
+      // touchmove移动端点击滑动触发 获取seekTime并设置到类的属性中
       this.seekTime = this.player.media.duration * (this.player.elements.inputs.seek.value / 100);
     } else {
       // Calculate seek hover position as approx video seconds
       const clientRect = this.player.elements.progress.getBoundingClientRect();
-      const percentage = (100 / clientRect.width) * (event.pageX - clientRect.left);
+      const percentage = (100 / clientRect.width) * (event.pageX - clientRect.left); // event.pageX 鼠标距离浏览器窗口左侧的距离；clientRect.left元素左侧距离浏览器窗口左侧的距离
       this.seekTime = this.player.media.duration * (percentage / 100);
 
       if (this.seekTime < 0) {
@@ -233,6 +239,7 @@ class PreviewThumbnails {
       this.mousePosX = event.pageX;
 
       // Set time text inside image container
+      // 修改缩略图上展示的时间
       this.elements.thumb.time.innerText = formatTime(this.seekTime);
 
       // Get marker point for time
@@ -249,6 +256,7 @@ class PreviewThumbnails {
     this.showImageAtCurrentTime();
   };
 
+  // 鼠标点击或者鼠标离开或者视频播放或者视频seek时，隐藏缩略图的显示
   endMove = () => {
     this.toggleThumbContainer(false, true);
   };
@@ -331,11 +339,13 @@ class PreviewThumbnails {
     this.elements.thumb.imageContainer.appendChild(timeContainer);
 
     // Inject the whole thumb
+    // 如果有progress元素，那么把缩略图元素插入progress元素中
     if (is.element(this.player.elements.progress)) {
       this.player.elements.progress.appendChild(this.elements.thumb.container);
     }
 
     // Create HTML element: plyr__preview-scrubbing-container
+    // 创建一个scrubbing元素，用于拖拽进度条时，将缩略图覆盖在视频播放窗口中显示
     this.elements.scrubbing.container = createElement('div', {
       class: this.player.config.classNames.previewThumbnails.scrubbingContainer,
     });
@@ -352,6 +362,7 @@ class PreviewThumbnails {
     }
   };
 
+  // 展示当前时间下的缩略图
   showImageAtCurrentTime = () => {
     if (this.mouseDown) {
       this.setScrubbingContainerSize();
@@ -627,9 +638,9 @@ class PreviewThumbnails {
   };
 
   // Set the size to be about a quarter of the size of video. Unless option dynamicSize === false, in which case it needs to be set in CSS
+  // 设置缩略图容器大小和位置
   setThumbContainerSizeAndPos = () => {
     const { imageContainer } = this.elements.thumb;
-
     if (!this.sizeSpecifiedInCSS) {
       const thumbWidth = Math.floor(this.thumbContainerHeight * this.thumbAspectRatio);
       imageContainer.style.height = `${this.thumbContainerHeight}px`;

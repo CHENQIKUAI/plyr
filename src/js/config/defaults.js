@@ -319,7 +319,7 @@ const defaults = {
       quality: '[data-plyr="quality"]',
     },
     display: {
-      currentTime: '.plyr__time--current',
+      currentTime: '.plyr__time--current', // 剩余时间
       duration: '.plyr__time--duration',
       buffer: '.plyr__progress__buffer',
       loop: '.plyr__progress__loop', // Used later
@@ -388,7 +388,7 @@ const defaults = {
       thumbContainerShown: 'plyr__preview-thumb--is-shown',
       imageContainer: 'plyr__preview-thumb__image-container',
       timeContainer: 'plyr__preview-thumb__time-container',
-      // Scrubbing
+      // Scrubbing 拖拽时 缩略图就覆盖在整个视频播放窗口中
       scrubbingContainer: 'plyr__preview-scrubbing',
       scrubbingContainerShown: 'plyr__preview-scrubbing--is-shown',
     },
