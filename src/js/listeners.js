@@ -515,6 +515,7 @@ class Listeners {
   };
 
   // Run default and custom handlers
+  // 运行默认和自定义事件处理器
   proxy = (event, defaultHandler, customHandlerKey) => {
     const { player } = this;
     const customHandler = player.config.listeners[customHandlerKey];

@@ -32,6 +32,7 @@ class Fullscreen {
 
     // Register event listeners
     // Handle event (incase user presses escape etc)
+    // 监听到全屏变化事件时，用统一的事件名称暴露出去。（这是在全屏变化之后）
     on.call(
       this.player,
       document,
@@ -43,8 +44,10 @@ class Fullscreen {
     );
 
     // Fullscreen toggle on double click
+    // 双击时，调用toggle，执行全屏或者退出
     on.call(this.player, this.player.elements.container, 'dblclick', (event) => {
       // Ignore double click in controls
+      // 若双击了控制元素，则忽略
       if (is.element(this.player.elements.controls) && this.player.elements.controls.contains(event.target)) {
         return;
       }
@@ -146,12 +149,16 @@ class Fullscreen {
     // Update toggle button
     const button = this.player.elements.buttons.fullscreen;
     if (is.element(button)) {
+      // 设置到button的属性中，这一步会更改button上的属性，添加或移除plyr__control--pressed属性
+      // 结合.plyr__control:not(.plyr__control--pressed) .icon--pressed的样式，控制着全屏和退出全屏icon的显示
       button.pressed = this.active;
     }
 
     // Always trigger events on the plyr / media element (not a fullscreen container) and let them bubble up
     const target = this.target === this.player.media ? this.target : this.player.elements.container;
     // Trigger an event
+    // 触发一个事件。什么地方会使用到呢？在listeners中，会监听container的enterfullscreen和exitfullscreen事件
+    // 这里是包装了一层，把原本不同的事件名称都做了处理，监听到后，用一个统一的事件名称触发出去。
     triggerEvent.call(this.player, target, this.active ? 'enterfullscreen' : 'exitfullscreen', true);
   };
 
@@ -170,6 +177,7 @@ class Fullscreen {
     document.body.style.overflow = toggle ? 'hidden' : '';
 
     // Toggle class hook
+    // 设置.plyr--fullscreen-fallback属性，把视频容器元素设置长宽占满浏览器、fixed定位、z-index设置很高。
     toggleClass(this.target, this.player.config.classNames.fullscreen.fallback, toggle);
 
     // Force full viewport on iPhone X+
@@ -252,6 +260,7 @@ class Fullscreen {
 
   // Make an element fullscreen
   enter = () => {
+    console.log('in enter');
     if (!this.enabled) {
       return;
     }
@@ -293,6 +302,8 @@ class Fullscreen {
   };
 
   // Toggle state
+  // 切换状态
+  // 该方法会被外部调用
   toggle = () => {
     if (!this.active) {
       this.enter();
