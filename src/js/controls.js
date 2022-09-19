@@ -516,7 +516,7 @@ const controls = {
         menuItem.checked = true;
 
         switch (type) {
-          case 'language':
+          case 'language': // 对应的是字幕的选择
             this.currentTrack = Number(value);
             break;
 
@@ -817,6 +817,7 @@ const controls = {
 
   // Hide/show a tab
   toggleMenuButton(setting, toggle) {
+    // 隐藏该元素
     toggleHidden(this.elements.settings.buttons[setting], !toggle);
   },
 
@@ -1006,28 +1007,32 @@ const controls = {
   // TODO: rework this to user the getter in the API?
 
   // Set a list of available captions languages
+  // 创建供用户点击的字幕按钮，让用户选择哪个字幕
   setCaptionsMenu() {
     // Menu required
     if (!is.element(this.elements.settings.panels.captions)) {
+      // 这里其实是查看plyr__menu__container这个元素是否存在，若不存在，则不执行下面的代码
       return;
     }
 
     // TODO: Captions or language? Currently it's mixed
     const type = 'captions';
-    const list = this.elements.settings.panels.captions.querySelector('[role="menu"]');
+    const list = this.elements.settings.panels.captions.querySelector('[role="menu"]'); // 找到字幕menu元素
     const tracks = captions.getTracks.call(this);
     const toggle = Boolean(tracks.length);
 
     // Toggle the pane and tab
     controls.toggleMenuButton.call(this, type, toggle);
 
-    // Empty the menu
+    // Empty the menu 清空元素子元素
     emptyElement(list);
 
     // Check if we need to toggle the parent
+    // 如果buttonts中有按钮，那么menu就需要展示出来。否则，就隐藏。
     controls.checkMenu.call(this);
 
     // If there's no captions, bail
+    // 如果不显示，那么中断执行
     if (!toggle) {
       return;
     }
@@ -1037,12 +1042,13 @@ const controls = {
       value,
       checked: this.captions.toggled && this.currentTrack === value,
       title: captions.getLabel.call(this, track),
-      badge: track.language && controls.createBadge.call(this, track.language.toUpperCase()),
+      badge: track.language && controls.createBadge.call(this, track.language.toUpperCase()), // badge放在这里不够内聚，本段应负责收集数据，具体创建元素应该由createMenuItem负责。
       list,
       type: 'language',
     }));
 
     // Add the "Disabled" option to turn off captions
+    // 添加一个关闭字幕的按钮
     options.unshift({
       value: -1,
       checked: !this.captions.toggled,
@@ -1054,6 +1060,8 @@ const controls = {
     // Generate options
     options.forEach(controls.createMenuItem.bind(this));
 
+    // 重新展示菜单中 当前选中的字幕的类别、并设置当前选中字幕的相关按钮元素的checked为true
+    // 注释后并没有发现页面展示有什么区别。其他地方也会调用本下面方法。
     controls.updateSetting.call(this, type, list);
   },
 
@@ -1072,7 +1080,7 @@ const controls = {
 
     // Toggle the pane and tab
     const toggle = !is.empty(this.options.speed) && this.options.speed.length > 1;
-    controls.toggleMenuButton.call(this, type, toggle);
+    controls.toggleMenuButton.call(this, type, toggle); // 控制setting按钮点击后字幕选择的menu的展示
 
     // Empty the menu
     emptyElement(list);
@@ -1100,6 +1108,7 @@ const controls = {
 
   // Check if we need to hide/show the settings menu
   checkMenu() {
+    // 如果buttonts中有按钮，那么menu就需要展示出来。否则，就隐藏。
     const { buttons } = this.elements.settings;
     const visible = !is.empty(buttons) && Object.values(buttons).some((button) => !button.hidden);
 

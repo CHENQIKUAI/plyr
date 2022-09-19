@@ -31,6 +31,7 @@ const captions = {
     }
 
     // Only Vimeo and HTML5 video supported at this point
+    // 如果是音频，或者是youtube或者是视频但是不支持字幕时
     if (!this.isVideo || this.isYouTube || (this.isHTML5 && !support.textTracks)) {
       // Clear menu and hide
       if (
@@ -341,7 +342,7 @@ const captions = {
     let currentTrack = track;
 
     if (!is.track(currentTrack) && support.textTracks && this.captions.toggled) {
-      currentTrack = captions.getCurrentTrack.call(this);
+      currentTrack = captions.getCurrentTrack.call(this); // 获取当前字幕
     }
 
     if (is.track(currentTrack)) {
