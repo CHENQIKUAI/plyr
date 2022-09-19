@@ -260,7 +260,6 @@ class Fullscreen {
 
   // Make an element fullscreen
   enter = () => {
-    console.log('in enter');
     if (!this.enabled) {
       return;
     }

@@ -95,8 +95,6 @@ class Plyr {
       },
     };
 
-    console.log(this.elements, 'show elements');
-
     // Captions
     this.captions = {
       active: null,

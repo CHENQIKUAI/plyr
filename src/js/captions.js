@@ -144,7 +144,10 @@ const captions = {
           }
 
           // Add event listener for cue changes
-          on.call(this, track, 'cuechange', () => captions.updateCues.call(this));
+          on.call(this, track, 'cuechange', () => {
+            // 监听到cue变化时，由以下函数控制字幕的更替
+            captions.updateCues.call(this);
+          });
         });
     }
 
@@ -177,7 +180,7 @@ const captions = {
       return;
     }
 
-    const { toggled } = this.captions; // Current state
+    const { toggled } = this.captions; // Current state toggles表示是否打开字幕
     const activeClass = this.config.classNames.captions.active;
     // Get the next state
     // If the method is called without parameter, toggle based on current value
@@ -200,16 +203,19 @@ const captions = {
         this.captions.language = track.language;
 
         // Set caption, but don't store in localStorage as user preference
+        // 设置要选中哪个字幕
         captions.set.call(this, tracks.indexOf(track));
         return;
       }
 
       // Toggle button if it's enabled
       if (this.elements.buttons.captions) {
+        // 设置pressed属性，会被监听到，并添加或移除相关类，从而造成点击后样式的不同。模拟出选中和不选中的样式。
         this.elements.buttons.captions.pressed = active;
       }
 
       // Add class hook
+      // 通过类的添加和删除来控制字幕的显示和隐藏
       toggleClass(this.elements.container, activeClass, active);
 
       this.captions.toggled = active;
@@ -232,6 +238,7 @@ const captions = {
 
   // Set captions by track index
   // Used internally for the currentTrack setter with the passive option forced to false
+  // 设置要选中哪个字幕
   set(index, passive = true) {
     const tracks = captions.getTracks.call(this);
 
@@ -362,6 +369,7 @@ const captions = {
 
   // Update captions using current track's active cues
   // Also optional array argument in case there isn't any track (ex: vimeo)
+  // 更新字幕
   updateCues(input) {
     // Requires UI
     if (!this.supported.ui) {
@@ -384,14 +392,14 @@ const captions = {
     // Get cues from track
     if (!cues) {
       const track = captions.getCurrentTrack.call(this);
-
+      // 获取当前激活的cue
       cues = Array.from((track || {}).activeCues || [])
         .map((cue) => cue.getCueAsHTML())
         .map(getHTML);
     }
 
     // Set new caption text
-    const content = cues.map((cueText) => cueText.trim()).join('\n');
+    const content = cues.map((cueText) => cueText.trim()).join('\n'); // 将当前激活的cue拼接成内容
     const changed = content !== this.elements.captions.innerHTML;
 
     if (changed) {
